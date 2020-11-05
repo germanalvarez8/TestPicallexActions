@@ -14,9 +14,6 @@ public class Main {
         c1.agregarLibro(l2);
         c1.agregarLibro(l3);
         c1.agregarLibro(l4);
-
-        Biblioteca.mergeSort1(c1.libros,c1.nroLibros);
-        c1.mostrar();
     }
 
 }
