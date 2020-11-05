@@ -1,4 +1,3 @@
-Title: Si funciona voy a ser feliz
 
 Tracker ID: #ADD LINK TO PIVOTAL STORY
 
