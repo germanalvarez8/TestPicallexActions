@@ -1,0 +1,3 @@
+  - name: Verify Pull Request Labels
+  uses: jesusvasquez333/verify-pr-label-action@v1.3.1 
+  
