@@ -1,0 +1,2 @@
+- name: labels
+  uses: NathanielHill/check-pr-label-action@v4.0.0
