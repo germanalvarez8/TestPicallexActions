@@ -1,15 +1,49 @@
-Tracker ID: #ADD LINK TO PIVOTAL STORY
+## Status
+**READY/IN DEVELOPMENT/HOLD**
 
-Unit tests completed?: (Y/N)
+## Type
+- [ ] Feature
+- [ ] Refactor
+- [ ] Bug Fix
 
-PR Branch #ADD LINK TO PR BRANCH
+## Description
+A few sentences describing the overall goals of the pull request's commits.
 
-Code Coverage & Build Info #ADD LINK TO JENKINS CONSOLE
+## Jira issues
+*
 
-E2E Approved #ADD LINK TO PASSING E2E TESTS
 
-Windows Testing #HAS WINDOWS BEEN TESTED?
+## Todos
+- [ ] Tests
+- [ ] Documentation
 
-Related PR #ADD ANY RELATED PULL REQUESTS
+## Related PRs
+List related PRs against other branches:
 
-UX Approved #ADD UX APPROVAL IF NEEDED
+branch | PR
+------ | ------
+other_pr_production | [link]()
+other_pr_master | [link]()
+
+## Steps to Test or Reproduce
+Outline the steps to test or reproduce the PR here.
+
+```sh
+git pull origin master --rebase && git fetch
+git checkout --track origin/<feature_branch>
+```
+
+1. Ir a Menú Ppal y listar órdenes
+2. ...
+
+## Migrations
+YES | NO
+Listado de issues para aplicar cambios en producción (Proyecto PO, Asignar a Diego)
+
+*
+
+
+## Impacted Areas in Application
+List general components of the application that this PR will affect:
+
+*
