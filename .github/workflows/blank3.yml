@@ -7,7 +7,7 @@ name: CI
 on:
   pull_request:
     ##branches: [ main ]
-    types: [edited, opened, synchronize, reopened]
+    types: [edited, opened, labeled, unlabeled, synchronize, reopened]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -25,6 +25,7 @@ jobs:
         uses: NathanielHill/check-pr-label-action@v4.0.0
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'bug, enhancement, documentation, duplicate, help wanted, good first issue, invalid, question, wontfix'
       
       - name: Check title
   # Check that the title has a format "[key-number]" "Description"
