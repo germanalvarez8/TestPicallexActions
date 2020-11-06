@@ -5,10 +5,9 @@ name: CI
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the main branch
 on:
-  push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
+    ##branches: [ main ]
+    types: [edited, opened, synchronize, reopened]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -27,3 +26,11 @@ jobs:
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           valid-labels: 'bug, enhancement'
+      
+      - name: Check title
+  # Check that the title has a format "[key-number]" "Description"
+        uses: deepakputhraya/action-pr-title@master
+        with:
+          regex: '\[\w{2,3}-\d{1,}\].*' # Regex the title should match.
+          prefix_case_sensitive: false # title prefix are case insensitive
+          github_token: ${{ github.token }} # Default: ${{ github.token }}
