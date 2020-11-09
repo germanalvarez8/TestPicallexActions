@@ -25,7 +25,6 @@ jobs:
         uses: NathanielHill/check-pr-label-action@v4.0.0
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
-          valid-labels: '(M|T).*'
       
       - name: Check title
   # Check that the title has a format "[key-number]" "Description"
