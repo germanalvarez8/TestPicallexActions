@@ -25,14 +25,13 @@ jobs:
         uses: NathanielHill/check-pr-label-action@v4.0.0
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
-          valid-labels: 'bug, enhancement, documentation, duplicate, help wanted, good first issue, invalid, question, wontfix'
+          valid-labels: '(M|T).*'
       
       - name: Check title
   # Check that the title has a format "[key-number]" "Description"
         uses: deepakputhraya/action-pr-title@master
         with:
           regex: '\[\w{2,3}-\d{1,}\].*' # Regex the title should match.
-          description: the title must have the form [key-number] 'Description'
 
           prefix_case_sensitive: false # title prefix are case insensitive
           github_token: ${{ github.token }} # Default: ${{ github.token }}
