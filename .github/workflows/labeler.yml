@@ -1,4 +1,4 @@
 version: 1
 labels:
 - label: "bug"
-  title: "^WIP:.*"
+  title: "^WIPO:.*"
