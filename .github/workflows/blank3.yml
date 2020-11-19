@@ -21,14 +21,6 @@ jobs:
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           valid-labels: 'bug, documentation'
-
-      - name: Check Pull Request Task type Label
-        # Check that the pull request has at least one label of type "T.*"
-        uses: jesusvasquez333/verify-pr-label-action@v1.3.1
-        with:
-          github-token: '${{ secrets.GITHUB_TOKEN }}'
-          valid-labels: 'duplicate'
-
       - name: Check title conventions
         # Check that the title has a format "[key-number]" "Description"
         uses: deepakputhraya/action-pr-title@master
