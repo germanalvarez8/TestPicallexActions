@@ -21,6 +21,13 @@ jobs:
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           valid-labels: 'bug, documentation, duplicate'
+      
+      - name: Check Pull Request Task type Label
+        # Check that the pull request has at least one label of type "T.*"
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'duplicate'
+
       - name: Check title conventions
         # Check that the title has a format "[key-number]" "Description"
         uses: deepakputhraya/action-pr-title@master
