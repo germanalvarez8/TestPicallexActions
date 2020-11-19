@@ -2,7 +2,7 @@ name: Label PRs
 
 on:
   pull_request:
-  types: [opened, labeled, unlabeled, synchronize]
+    types: [opened, labeled, unlabeled, synchronize]
 
 jobs:
   build:
@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      uses: srvaroa/labeler@master
-      env:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: labeler test
+        uses: srvaroa/labeler@master
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
