@@ -20,7 +20,7 @@ jobs:
         uses: jesusvasquez333/verify-pr-label-action@v1.3.1
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
-          valid-labels: 'bug, documentation'
+          valid-labels: 'bug, documentation, duplicate'
       - name: Check title conventions
         # Check that the title has a format "[key-number]" "Description"
         uses: deepakputhraya/action-pr-title@master
