@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Check Pull Request Task type Label
         # Check that the pull request has at least one label of type "T.*"
-        uses: germanalvarez8/verify-pr-label-action@v1.3.1
+        uses: germanalvarez8/verify-pr-label-action@v1.3.2
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           valid-labels: 'bug, T. Actualización de valores, T. Fix código, T. Fix visual, T. Mejora de código, T. Mejora visual T. Nueva funcionalidad, T. Nueva sección'
