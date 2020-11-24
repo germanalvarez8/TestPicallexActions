@@ -23,7 +23,7 @@ jobs:
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           valid-labels: 'M. Activity Stream, M. Administración, M.Billing, M. Comisiones, M. Configuraciones de Telefonía, M. Consultas de ordenes, M. Deploy, M. Dialer, M. Drivers APP, M. Drivers, M. Edición de lead, M. Edición de orden, M. Facebook API, M. FollowUp, M. Grabaciones, M. Ingreso de orden, M. Invoices, M. Lead express, M. Merchants, M. Mi dids, M. Mis campañas, M. Mis ordenes, M. Pre leads, M. Reportes de leads, M. Reportes de ordenes, M. Robots, M. Shipping, M. Sincronización, M. Telinta API, M. Usuarios, M. Vendedores, M. Verificaciones, M. Webphone, M. WhatsApp, T. Actualización de valores, T. Fix código, T. Fix visual, T. Mejora de código, T. Mejora visual T. Nueva funcionalidad, T. Nueva sección'
-          regex: 'M\..*, T\..*'
+          regex: ('M\..*', 'T\..*')
 
       - name: Check title conventions
         # Check that the title has a format "[key-number]" "Description"
