@@ -22,7 +22,7 @@ jobs:
         uses: germanalvarez8/verify-pr-label-action@master
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
-          regex: 'M(\.).*, T(\.).*'
+          regex: 'M\..*, T\..*'
 
       - name: Check title conventions
         # Check that the title has a format "[key-number]" "Description"
