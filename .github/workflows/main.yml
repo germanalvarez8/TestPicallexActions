@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Check Pull Request Task and Module Label
         # Check that the pull request has at least one label of type "T.*"
-        uses: germanalvarez8/verify-pr-label-action@master
+        uses: germanalvarez8/verify-pr-label-action@v1.4.5
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           regex: 'M\..*, T\..*, A\..*'
