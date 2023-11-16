@@ -13,28 +13,28 @@ jobs:
 
     - name: Check for Unreviewed PRs
       run: |
-          # Get username from the current PR
-          PR_CREATOR=$(jq -r .pull_request.user.login < $GITHUB_EVENT_PATH)
+          USERNAME="${{ github.actor }}"
 
-          # Fetch PRs assigned to the user using GitHub API
-          PRS_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                     "https://api.github.com/repos/${{ github.repository }}/pulls?state=open&assignee=$PR_CREATOR")
+          # Fetch PRs assigned to the user for review
+          ASSIGNED_PRS_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                              "https://api.github.com/repos/${{ github.repository }}/pulls?state=open")
 
-          # Process each PR
-          echo "$PRS_JSON" | jq -c '.[]' | while read -r pr; do
+          # Iterate over each PR to check if it's assigned to the user for review and not reviewed by them
+          echo "$ASSIGNED_PRS_JSON" | jq -c '.[]' | while read -r pr; do
             PR_NUMBER=$(echo "$pr" | jq -r '.number')
             PR_TITLE=$(echo "$pr" | jq -r '.title')
+            IS_ASSIGNED=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                          "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/assignees" | jq '.[] | select(.login == "'$USERNAME'") | length')
 
-            # Check if the PR has been reviewed by the PR creator
-            REVIEWS_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                          "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews")
+            # Check if the user is an assignee
+            if [[ $IS_ASSIGNED -gt 0 ]]; then
+              # Check if the user has reviewed the PR
+              USER_REVIEWED=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews" | jq '[.[] | select(.user.login == "'$USERNAME'")] | length')
 
-            # Check for reviews done by the PR creator
-            CREATOR_REVIEWS_COUNT=$(echo "$REVIEWS_JSON" | jq '[.[] | select(.user.login == "'$PR_CREATOR'")] | length')
-
-            # Check if there are no reviews by the PR creator
-            if [[ $CREATOR_REVIEWS_COUNT -eq 0 ]]; then
-              echo "Blocking merge due to PR #${PR_NUMBER}: '${PR_TITLE}' not reviewed by the assignee."
-              exit 1
+              if [[ $USER_REVIEWED -eq 0 ]]; then
+                echo "Blocking merge due to unreviewed PR #${PR_NUMBER}: '${PR_TITLE}' assigned to ${USERNAME} for review."
+                exit 1
+              fi
             fi
           done
