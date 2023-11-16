@@ -13,13 +13,28 @@ jobs:
 
     - name: Check for Unreviewed PRs
       run: |
-        username = get_username_from_current_pr()
-        prs = fetch_prs_assigned_to_user(username)
-        
-        for pr in prs:
-          if not has_reviews(pr):
-            pr_number = pr['number']
-            pr_title = pr['title']
-            
-            print(f"Blocking merge due to unreviewed PR #{pr_number}: {pr_title} assigned to the user.")
-            exit(1)
+          # Get username from the current PR
+          PR_CREATOR=$(jq -r .pull_request.user.login < $GITHUB_EVENT_PATH)
+
+          # Fetch PRs assigned to the user using GitHub API
+          PRS_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                     "https://api.github.com/repos/${{ github.repository }}/pulls?state=open&assignee=$PR_CREATOR")
+
+          # Process each PR
+          echo "$PRS_JSON" | jq -c '.[]' | while read -r pr; do
+            PR_NUMBER=$(echo "$pr" | jq -r '.number')
+            PR_TITLE=$(echo "$pr" | jq -r '.title')
+
+            # Check if the PR has been reviewed
+            REVIEWS_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                          "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews")
+
+            # Count the number of reviews
+            REVIEWS_COUNT=$(echo "$REVIEWS_JSON" | jq '[.[] | select(.state == "APPROVED")] | length')
+
+            # Check if there are no reviews
+            if [[ $REVIEWS_COUNT -eq 0 ]]; then
+              echo "Blocking merge due to unreviewed PR #${PR_NUMBER}: ${PR_TITLE} assigned to the user."
+              exit 1
+            fi
+          done
