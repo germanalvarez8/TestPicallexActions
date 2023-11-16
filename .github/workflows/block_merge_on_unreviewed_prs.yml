@@ -1,0 +1,25 @@
+name: Block Merge on Unreviewed PRs
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-unreviewed-prs:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+
+    - name: Check for Unreviewed PRs
+      run: |
+        username = get_username_from_current_pr()
+        prs = fetch_prs_assigned_to_user(username)
+        
+        for pr in prs:
+          if not has_reviews(pr):
+            pr_number = pr['number']
+            pr_title = pr['title']
+            
+            print(f"Blocking merge due to unreviewed PR #{pr_number}: {pr_title} assigned to the user.")
+            exit(1)
