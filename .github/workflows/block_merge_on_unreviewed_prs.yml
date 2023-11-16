@@ -25,16 +25,16 @@ jobs:
             PR_NUMBER=$(echo "$pr" | jq -r '.number')
             PR_TITLE=$(echo "$pr" | jq -r '.title')
 
-            # Check if the PR has been reviewed
+            # Check if the PR has been reviewed by the PR creator
             REVIEWS_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                           "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews")
 
-            # Count the number of reviews
-            REVIEWS_COUNT=$(echo "$REVIEWS_JSON" | jq '[.[] | select(.state == "APPROVED")] | length')
+            # Check for reviews done by the PR creator
+            CREATOR_REVIEWS_COUNT=$(echo "$REVIEWS_JSON" | jq '[.[] | select(.user.login == "'$PR_CREATOR'")] | length')
 
-            # Check if there are no reviews
-            if [[ $REVIEWS_COUNT -eq 0 ]]; then
-              echo "Blocking merge due to unreviewed PR #${PR_NUMBER}: ${PR_TITLE} assigned to the user."
+            # Check if there are no reviews by the PR creator
+            if [[ $CREATOR_REVIEWS_COUNT -eq 0 ]]; then
+              echo "Blocking merge due to PR #${PR_NUMBER}: '${PR_TITLE}' not reviewed by the assignee."
               exit 1
             fi
           done
