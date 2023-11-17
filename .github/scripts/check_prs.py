@@ -10,8 +10,6 @@ def get_assigned_prs_not_reviewed_by_user(username, repo, token):
     response = requests.get(prs_url, headers=headers)
     prs = response.json()
 
-    print('all pulls', prs)
-
     for pr in prs:
         pr_number = pr['number']
         pr_title = pr['title']
