@@ -1,0 +1,39 @@
+name: Check pull request conventions
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  pull_request:
+    ##branches: [ main ]
+    types: [opened]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in 
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Pull Request Module Label
+        # Check that the pull request has at least one label of type "M.*"
+        uses: NathanielHill/check-pr-label-action@v4.0.0
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'bug, documentation'
+
+      - name: Check Pull Request Task type Label
+        # Check that the pull request has at least one label of type "T.*"
+        uses: NathanielHill/check-pr-label-action@v4.0.0
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'duplicate'
+
+      - name: Check title conventions
+        # Check that the title has a format "[key-number]" "Description"
+        uses: deepakputhraya/action-pr-title@master
+        with:
+          regex: '\[\w{2,3}-\d{1,}\]\s-\s.*' # Regex the title should match.
+
+          prefix_case_sensitive: false # title prefix are case insensitive
+          github_token: ${{ github.token }} # Default: ${{ github.token }}
