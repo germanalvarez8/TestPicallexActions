@@ -13,19 +13,22 @@ def get_assigned_prs_not_reviewed_by_user(username, repo, token):
     for pr in prs:
         pr_number = pr['number']
         pr_title = pr['title']
-        assignees = [assignee['login'] for assignee in pr['assignees']]
+        # Fetch the review requests for the PR
+        review_requests_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/requested_reviewers"
+        review_requests_response = requests.get(review_requests_url, headers=headers)
+        review_requests = review_requests_response.json()
+        reviewers = [reviewer['login'] for reviewer in review_requests.get('users', [])]
 
-        print('pr: ', pr_number, pr_title, assignees)
+        print('pr: ', pr_number, pr_title, reviewers)
 
-        if username in assignees:
+        # Check if the user is a requested reviewer and has not reviewed the PR
+        if username in reviewers:
             reviews_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/reviews"
             reviews_response = requests.get(reviews_url, headers=headers)
             reviews = reviews_response.json()
 
-            print('pr reviews', reviews)
-
             if not any(review['user']['login'] == username for review in reviews):
-                print(f"Blocking merge due to unreviewed PR #{pr_number}: '{pr_title}' assigned to {username} for review.")
+                print(f"Blocking merge due to unreviewed PR #{pr_number}: '{pr_title}' pending review by {username}.")
                 exit(1)
 
 if __name__ == "__main__":
