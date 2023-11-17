@@ -14,6 +14,7 @@ def get_assigned_prs_not_reviewed_by_user(username, repo, token):
     for pr in prs:
         pr_number = pr['number']
         pr_title = pr['title']
+        pr_html_url = pr['html_url']
         # Fetch the review requests for the PR
         review_requests_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/requested_reviewers"
         review_requests_response = requests.get(review_requests_url, headers=headers)
@@ -27,7 +28,7 @@ def get_assigned_prs_not_reviewed_by_user(username, repo, token):
             reviews = reviews_response.json()
 
             if not any(review['user']['login'] == username for review in reviews):
-                pending_review_prs.append(f"PR #{pr_number}: '{pr_title}'")
+                pending_review_prs.append(f"PR #{pr_number}: '{pr_title}' - {pr_html_url}")
 
     return pending_review_prs
 
