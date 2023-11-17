@@ -1,40 +1,27 @@
-name: Block Merge on Unreviewed PRs
+name: Block Merge on Unreviewed Assigned PRs
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  check-unreviewed-prs:
+  check-prs:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4.1.1
+      - name: Checkout code
+        uses: actions/checkout@v4.1.1
 
-    - name: Check for Unreviewed PRs
-      run: |
-          USERNAME="${{ github.actor }}"
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
 
-          # Fetch PRs assigned to the user for review
-          ASSIGNED_PRS_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                              "https://api.github.com/repos/${{ github.repository }}/pulls?state=open")
+      - name: Install dependencies
+        run: pip install requests
 
-          # Iterate over each PR to check if it's assigned to the user for review and not reviewed by them
-          echo "$ASSIGNED_PRS_JSON" | jq -c '.[]' | while read -r pr; do
-            PR_NUMBER=$(echo "$pr" | jq -r '.number')
-            PR_TITLE=$(echo "$pr" | jq -r '.title')
-            IS_ASSIGNED=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                          "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/assignees" | jq '.[] | select(.login == "'$USERNAME'") | length')
-
-            # Check if the user is an assignee
-            if [[ $IS_ASSIGNED -gt 0 ]]; then
-              # Check if the user has reviewed the PR
-              USER_REVIEWED=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews" | jq '[.[] | select(.user.login == "'$USERNAME'")] | length')
-
-              if [[ $USER_REVIEWED -eq 0 ]]; then
-                echo "Blocking merge due to unreviewed PR #${PR_NUMBER}: '${PR_TITLE}' assigned to ${USERNAME} for review."
-                exit 1
-              fi
-            fi
-          done
+      - name: Run script to check for unreviewed assigned PRs
+        run: python .github/scripts/check_prs.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_ACTOR: ${{ github.actor }}
